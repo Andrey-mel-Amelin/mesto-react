@@ -1,9 +1,7 @@
-function ImagePopup(props) {
-  const { name, selectedCard, onClose, isOpen } = props;
-
+function ImagePopup({ popupName, selectedCard, onClose, isOpen }) {
   return (
     <div
-      className={`popup popup_for_${name} ${isOpen ? 'popup_visible' : ''}`}
+      className={`popup popup_for_${popupName} ${isOpen && 'popup_visible'}`}
       onClick={(evt) => {
         if (evt.target.classList.contains('popup_visible')) {
           onClose();

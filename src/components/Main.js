@@ -1,16 +1,14 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../utils/Api';
 import Card from './Card';
 
-function Main(props) {
-  const { onEditProfile, onAddPlace, onEditAvatar, onCard } = props;
+function Main({ onEditProfile, onAddPlace, onEditAvatar, onCard }) {
+  const [userName, setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
+  const [cards, setCards] = useState([]);
 
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     api
       .getUserInfo()
       .then((info) => {
@@ -59,7 +57,14 @@ function Main(props) {
       </section>
       <section className="elements" aria-label="Карточки с изображениями">
         {cards.map((card) => (
-          <Card key={card._id} name={card.name} link={card.link} likesAmount={card.likes.length} onCardClick={onCard} />
+          <Card
+            card={card}
+            key={card._id}
+            name={card.name}
+            link={card.link}
+            likesAmount={card.likes.length}
+            onCardClick={onCard}
+          />
         ))}
       </section>
     </main>
