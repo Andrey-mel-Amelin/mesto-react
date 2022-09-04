@@ -1,4 +1,4 @@
-function PopupWithForm({ popupName, title, children, isOpen, onClose, buttonText }) {
+function PopupWithForm({ popupName, title, children, isOpen, onClose, buttonText, onSubmit }) {
   return (
     <div
       className={`popup popup_for_${popupName} ${isOpen && 'popup_visible'}`}
@@ -10,10 +10,10 @@ function PopupWithForm({ popupName, title, children, isOpen, onClose, buttonText
     >
       <div className="popup__container">
         <button className="popup__close-btn" onClick={onClose} aria-label="Закрытие формы" type="button"></button>
-        <form className="form form_for_edit-author" onSubmit={onClose} name={popupName} noValidate>
+        <form className="form form_for_edit-author" onSubmit={onSubmit} name={popupName} noValidate>
           <h2 className="form__title">{title}</h2>
           {children}
-          <button className="form__submit form__submit_inactive" type="submit">
+          <button className="form__submit" type="submit">
             {buttonText}
           </button>
         </form>

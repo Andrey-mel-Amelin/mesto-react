@@ -88,12 +88,8 @@ class Api {
     return this._deleteFetch(`/cards/${id}`);
   }
 
-  likeCard(id) {
-    return this._putFetch(`/cards/${id}/likes`);
-  }
-
-  deleteLikeCard(id) {
-    return this._deleteFetch(`/cards/${id}/likes`);
+  changeLikeCardStatus(id, isLiked) {
+    return isLiked ? this._putFetch(`/cards/${id}/likes`) : this._deleteFetch(`/cards/${id}/likes`);
   }
 }
 
