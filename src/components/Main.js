@@ -19,7 +19,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCard, cards, onCardLi
               onClick={onEditProfile}
               aria-label="Редактирование профиля"
               type="button"
-            ></button>
+            />
           </div>
           <p className="profile__author-job">{currentUser.about}</p>
         </div>
@@ -28,7 +28,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCard, cards, onCardLi
           onClick={onAddPlace}
           aria-label="Добавление карточки"
           type="button"
-        ></button>
+        />
       </section>
       <section className="elements" aria-label="Карточки с изображениями">
         {cards.map((card) => (

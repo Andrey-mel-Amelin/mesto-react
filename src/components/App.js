@@ -52,11 +52,11 @@ function App() {
       });
   }
 
-  function handleCardDelete(deletedCard) {
+  function handleCardDelete(card) {
     api
-      .deleteCard(deletedCard._id)
+      .deleteCard(card._id)
       .then(() => {
-        setCards(cards.filter((card) => card._id !== deletedCard._id));
+        setCards(state => state.filter((c) => c._id !== card._id));
       })
       .catch((err) => {
         console.log(err);

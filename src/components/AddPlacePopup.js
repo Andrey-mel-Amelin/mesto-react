@@ -43,6 +43,7 @@ export function AddPlacePopup({ isOpen, onClose, onAddCard }) {
         type="text"
         minLength="2"
         maxLength="30"
+        value={nameCard || ''}
         onChange={handleValueChange}
         required
       />
@@ -53,6 +54,7 @@ export function AddPlacePopup({ isOpen, onClose, onAddCard }) {
         id="link-img-input"
         placeholder="Ссылка на картинку"
         type="url"
+        value={linkCard || ''}
         onChange={handleValueChange}
         required
       />
