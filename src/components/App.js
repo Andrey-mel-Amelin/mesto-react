@@ -1,15 +1,20 @@
 import '../index.css';
 import { useState, useEffect } from 'react';
+import { Switch, Route, withRouter, Redirect, useHistory } from 'react-router-dom';
+import { api } from '../utils/Api';
+import * as auth from '../auth';
 import Header from './Header';
+import ProtectedRoute from './ProtectedRoute';
 import Main from './Main';
+import Register from './Register';
+import Login from './Login';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
 import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
-import ImagePopup from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api } from '../utils/Api';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -19,6 +24,8 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     api
@@ -37,6 +44,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
+    tokenCheck();
   }, []);
 
   function handleCardLike(card) {
@@ -56,7 +64,7 @@ function App() {
     api
       .deleteCard(card._id)
       .then(() => {
-        setCards(state => state.filter((c) => c._id !== card._id));
+        setCards((state) => state.filter((c) => c._id !== card._id));
       })
       .catch((err) => {
         console.log(err);
@@ -111,19 +119,68 @@ function App() {
       });
   }
 
+  function handleLogin(email, password) {
+    return auth.authorize(email, password).then((data) => {
+      if (!data.jwt) return;
+
+      setLoggedIn((old) => ({
+        ...old,
+        loggedIn: true,
+      }));
+      localStorage.setItem(data.jwt);
+    });
+  }
+
+  function handleRegister(email, password) {
+    return auth.register(email, password).then(() => {
+      history.push('/login');
+    });
+  }
+
+  function tokenCheck() {
+    const jwt = localStorage.getItem('jwt');
+
+    if (!jwt) return;
+
+    return auth.getContent(jwt).then((res) => {
+      if (res) {
+        setLoggedIn((old) => ({
+          ...old,
+          loggedIn: true,
+        }));
+        history.push('/');
+      }
+    });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
-        <Main
-          onEditProfile={() => setIsEditProfilePopupOpen(true)}
-          onAddPlace={() => setIsAddPlacePopupOpen(true)}
-          onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
-          onCard={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-        />
+        <Header loggedIn={loggedIn} history={history} />
+        <Switch>
+          <ProtectedRoute
+            component={Main}
+            exact
+            path="/"
+            loggedIn={loggedIn}
+            onEditProfile={() => setIsEditProfilePopupOpen(true)}
+            onAddPlace={() => setIsAddPlacePopupOpen(true)}
+            onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
+            onCard={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+          />
+          <Route path="/sign-up">
+            <Register onRegister={handleRegister} />
+          </Route>
+          <Route path="/sign-in">
+            <Login onLogin={handleLogin} />
+          </Route>
+          <Route exact path="/">
+            {!loggedIn && <Redirect to="/sign-in" />}
+          </Route>
+        </Switch>
         <Footer />
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddCard={handleAddCard} />
@@ -140,4 +197,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);

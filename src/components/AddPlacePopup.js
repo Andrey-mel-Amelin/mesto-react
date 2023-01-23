@@ -2,13 +2,13 @@ import PopupWithForm from './PopupWithForm';
 import { useEffect, useState } from 'react';
 
 export function AddPlacePopup({ isOpen, onClose, onAddCard }) {
-  const [nameCard, setNameCard] = useState('')
+  const [nameCard, setNameCard] = useState('');
   const [linkCard, setLinkCard] = useState('');
 
-   useEffect(() => {
-     setNameCard('');
-     setLinkCard('');
-   }, [isOpen]);
+  useEffect(() => {
+    setNameCard('');
+    setLinkCard('');
+  }, [isOpen]);
 
   function handleValueChange(evt) {
     if (evt.target.name === 'name') {
@@ -22,8 +22,8 @@ export function AddPlacePopup({ isOpen, onClose, onAddCard }) {
     evt.preventDefault();
     onAddCard({
       name: nameCard,
-      link: linkCard
-    })
+      link: linkCard,
+    });
   }
 
   return (
